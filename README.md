@@ -1,6 +1,6 @@
 # aframe-multi-camera
 
-<video src=".\video\multi-camera.mp4" autoplay=true></video>
+https://github.com/diarmidmackenzie/aframe-multi-camera/blob/2058458de046563ed951e0d2d6907518f39587d4/video/multi-camera.mp4
 
 ## Overview
 
