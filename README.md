@@ -1,6 +1,6 @@
 # aframe-multi-camera
 
-https://github.com/diarmidmackenzie/aframe-multi-camera/blob/2058458de046563ed951e0d2d6907518f39587d4/video/multi-camera.mp4?raw=true
+https://diarmidmackenzie.github.io/aframe-multi-camera/video/multi-camera.mp4
 
 ## Overview
 
@@ -13,27 +13,26 @@ This repository contains
 
 We have the following examples:
 
-(links to follow)
-
 #### Multiple Cameras
 
-Multiple cameras and canvases.
+Multiple cameras and canvases: https://diarmidmackenzie.github.io/aframe-multi-camera/examples/multi-screen.html
 
-Cursor use across multiple secondary cameras.
+Cursor use across multiple secondary cameras: https://diarmidmackenzie.github.io/aframe-multi-camera/examples/multi-screen-with-cursor.html
 
-Multiple camera views embedded in an HTML page without any background full-screen A-Frame scene.
+Multiple camera views embedded in an HTML page without any background full-screen A-Frame scene: https://diarmidmackenzie.github.io/aframe-multi-camera/examples/embedded-views.html
 
-Camera rendering to a plane in the scene, to create a CCTV monitor effect
+Secondary cameras rendering to planes in the scene, to create a CCTV monitor effect: https://diarmidmackenzie.github.io/aframe-multi-camera/examples/camera-texture.html
 
-Camera rendering to a plane in the scene, to create a mirror effect (this one is still to be created)
+Primary camera rendering to a plane in the scene, to create a CCTV monitor effect: https://diarmidmackenzie.github.io/aframe-multi-camera/examples/monitor-user-view.html
+
+Mirrors rendered to planes in the scene: https://diarmidmackenzie.github.io/aframe-multi-camera/examples/mirror-example.html
 
 ### Viewpoint Selector
 
-A basic example of a scene where the central objects can be manipulated using the viewpoint-selector
+A basic example of a scene where the central objects can be manipulated using the viewpoint-selector: https://diarmidmackenzie.github.io/aframe-multi-camera/examples/viewpoint-selector-basic.html
 
-A second example, demonstrating various different configuration options for the viewpoint selector.
+A second example, demonstrating various different configuration options for the viewpoint selector.https://diarmidmackenzie.github.io/aframe-multi-camera/examples/viewpoint-selector-alternate.html
 
-​	
 
 ## Components
 
