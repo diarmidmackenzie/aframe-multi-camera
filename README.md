@@ -1,6 +1,6 @@
 # aframe-multi-camera
 
-
+<video src=".\video\multi-camera.mp4" autoplay=true></video>
 
 ## Overview
 
@@ -97,10 +97,11 @@ Therefore you will need to include the patched version of A-Frame `cursor.js` fr
 Here are some current limitations with these components.
 
 - Various components have limited support for updates (i.e. changes to properties after initial creation).  I'm happy to fix issues like this up on a case by case basis - please raise an issue on the repository.  PRs for these fixes also welcome too!.
-- Rendering in-scene (i.e. mirror and secondary cameras that are not rendering to screen) currently only render to planes.  Rendering to other flat shapes (circle, triangle, ring) should be straightforward - if someone raises an issue or PR I'll happily take a look.  Not sure about rendering to 3D surfaces - getting some texture in place is probably not too hard.  Getting physically accurate mirror reflections is probably *very* difficult! 
-- Rendering to screen is intended for desktop only, and is not intended to be used in VR.  When in VR, rendering is skipped for secondary-cameras that render to screen.
+- Rendering in-scene (i.e. mirror and secondary cameras that are not rendering to screen) currently only render to planes.  Rendering to other flat shapes (circle, triangle, ring) should be straightforward - if someone raises an issue or PR I'll happily take a look.  Not sure about rendering to 3D surfaces - getting some texture in place is probably not too hard.  Getting physically accurate mirror reflections is probably *very* difficult!
+- For rendering in-scene, there is no frustrum culling.  Textures are rendered whether or not they are actually in view of camera.
+- Rendering to screen is intended for desktop only, and is not intended to be used in VR.  When in VR, rendering is skipped for secondary-cameras that render to screen (for rendering to a VR HUD, you can use rendering in-scene to a plane fixed directly in front of the camera).
 - In VR (tested on Oculus Quest 2) , mirror textures seem to be extremely pixelated, regardless of "quality" settings.  I haven't yet understood why this is.
-- Cursor controls cannot be used on mirror textures, or secondary textures rendered to a plane - only to secondary textures rendered to screen.  If you have specific use cases that need cursor on either of these, raise an issue and I will take a look at how hard this is.
+- Cursor controls cannot be used on mirror textures, or secondary cameras rendered to a plane - only to secondary cameras rendered to screen.  If you have specific use cases that need cursor on either of these, raise an issue and I will take a look at how hard this is.
 
 
 
