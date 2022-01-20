@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+      <script src="../aframe/cursor.js"></script>
+      <script src="../src/multi-camera.js"></script>
+      <script src="../src/viewpoint-selector.js"></script>
+      <script src="./mouse-rotate-controls.js"></script>
+  </head>
+  <body>
+    <a-scene>
+      <a-entity camera look-controls="enabled:false" position="0 1.6 0"></a-entity>
+      <!-- to view viewpoint-selector in main screen
+      <a-entity camera layers="3" look-controls="enabled:false" position="0 0 0"></a-entity>-->
+      <a-entity id="selector-renderer"
+                viewpoint-selector-renderer="displayBox: #viewpoint-selector-position;
+                                             syncTarget: #container;
+                                             layer: 3">
+      </a-entity>
+
+      <!-- Default lighting injected by A-Frame. -->
+      <!-- Plus lighting for layer 3 (auto-extension of lighting layers appears bugged) -->
+      <a-entity light="type: ambient; color: #BBB"></a-entity>
+      <a-entity light="type: directional; color: #FFF; intensity: 0.6" position="-0.5 1 1"></a-entity>
+      <a-entity light="type: ambient; color: #BBB" layers="3"></a-entity>
+      <a-entity light="type: directional; color: #FFF; intensity: 0.6" position="-0.5 1 1" layers="3"></a-entity>
+
+      <a-entity id="container" position = "0 0 -4" mouse-rotate-controls>
+        <a-box position="-1 0.5 1" rotation="0 45 0" color="#4CC3D9"></a-box>
+        <a-sphere position="0 1.25 -1" radius="1.25" color="#EF2D5E"></a-sphere>
+        <a-cylinder position="1 0.75 1" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
+        <a-plane position="0 0 0" rotation="-90 0 0" width="4" height="4" color="#7BC8A4" side="double"></a-plane>
+      </a-entity>
+      <a-sky color="#3C3C3C"></a-sky>
+    </a-scene>
+    <div id="viewpoint-selector-position"
+         style="position:absolute; top: 30px; right: 30px; width: 150px; height:150px">
+    </div>
+  </body>
+</html>
