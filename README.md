@@ -1,6 +1,7 @@
 # aframe-multi-camera
 
-https://diarmidmackenzie.github.io/aframe-multi-camera/video/multi-camera.mp4
+https://user-images.githubusercontent.com/16045703/150434386-91181ba5-4162-4e15-a100-bf1576dba8ba.mp4
+
 
 ## Overview
 
