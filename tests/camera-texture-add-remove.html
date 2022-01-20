@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+      <script src="../src/multi-camera.js"></script>
+      <script>
+        const NUM_CAMERAS = 4;
+        const cameraData = [{index: 1, parent: "a-scene", position: "0 9 -6", rotation: "-90 0 0"},
+                            {index: 2, parent: "a-scene", position: "6 1.6 -12", rotation: "0 135 0"},
+                            {index: 3, parent: "a-scene", position: "-6 1.6 -6", rotation: "0 -90 0"},
+                            {index: 4, parent: "a-scene", position: "6 1.6 -6", rotation: "0 90 0"}];
+        const cameras = Array(NUM_CAMERAS).fill(null);
+
+        var cameraCount = 0;
+
+        function addCamera(index) {
+          const camera = document.createElement('a-entity');
+
+          camera.setAttribute('id', cameraData[index].index);
+          camera.setAttribute('position', cameraData[index].position);
+          camera.setAttribute('rotation', cameraData[index].rotation);
+          camera.setAttribute('secondary-camera', `output:plane; outputElement:#texture-plane${cameraData[index].index}; sequence: before`);
+
+          parent = document.querySelector(cameraData[index].parent);
+          parent.appendChild(camera)
+          cameras[index] = camera;
+          cameraCount++;
+        }
+
+        function removeCamera(index) {
+          camera = cameras[index];
+          camera.parentNode.removeChild(camera);
+          cameras[index] = null;
+          cameraCount--;
+        }
+
+        setInterval(() => {
+
+            var index = Math.floor(Math.random() * NUM_CAMERAS);
+
+            // If lots of cameras already, increase chance of
+            // removing one.
+            // If few cameras, increase chance of
+            // adding one.
+            if (cameraCount >= NUM_CAMERAS/2 && !cameras[index]) {
+              index = Math.floor(Math.random() * NUM_CAMERAS);
+            }
+            else if (cameraCount <= NUM_CAMERAS/2 && cameras[index]) {
+              index = Math.floor(Math.random() * NUM_CAMERAS);
+            }
+
+            if (!cameras[index]) {
+                addCamera(index);
+            } else {
+                removeCamera(index);
+            }
+        }, 1000)
+
+      </script>
+  </head>
+  <body>
+    <a-scene stats>
+      <img id="test-texture" src="https://cdn.aframe.io/examples/ui/kazetachinu.jpg" crossorigin="anonymous"/>
+      <a-entity id="container" position = "0 0 -6">
+        <a-box position="-1 0.5 1" rotation="0 0 0" color="#4CC3D9"
+               animation="property: rotation; to: 0 360 0; loop: true; dur: 3000; easing: linear"></a-box>
+        <a-sphere position="0 1.25 -1" radius="1.25" color="#EF2D5E"></a-sphere>
+        <a-cylinder position="1 0.75 1" radius="0.5" height="1.5" color="#FFC65D"
+                    animation="property: rotation; to: 360 0 0; loop: true; dur: 3000; easing: linear"></a-cylinder>
+        <a-plane position="0 0 0" rotation="-90 0 0" width="4" height="4" color="#7BC8A4" side="double"></a-plane>
+      </a-entity>
+      <a-plane id="texture-plane1" position="-3 1 -2" rotation="-45 0 0" width="1" height="1"
+               src='#test-texture'></a-plane>
+      <a-plane id="texture-plane2" position="-1.5 1 -2" rotation="-45 0 0" width="1" height="1"
+               src='#test-texture'></a-plane>
+      <a-plane id="texture-plane3" position="1.5 1 -2" rotation="-45 0 0" width="1" height="1"
+               src='#test-texture'></a-plane>
+      <a-plane id="texture-plane4" position="3 1 -2" rotation="-45 0 0" width="1" height="1"
+               src='#test-texture'></a-plane>
+
+      <a-sky color="#ECECEC"></a-sky>
+
+    </a-scene>
+
+    <div style="position:absolute; text-align: center; top: 10px; left: 200px; right: 200px; width: auto; height:100px">
+      Drag with the mouse to look around, and move with WASD.<br/>
+      The planes in the scene in front of you show various different camera angles on the shapes.<br/>
+      All rendered onto planes within the A-Frame scene itself.<br/>
+      Cameras are added & removed at random every second.
+    </div>
+
+  </body>
+</html>

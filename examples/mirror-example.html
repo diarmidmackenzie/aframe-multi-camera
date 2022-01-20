@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+      <script src="../src/mirror.js"></script>
+  </head>
+  <body>
+    <a-scene stats>
+      <img id="test-texture" src="https://cdn.aframe.io/examples/ui/kazetachinu.jpg" crossorigin="anonymous"/>
+      <a-camera position="0 1.6 5"></a-camera>
+      <a-entity id="container" position = "0 0 -4">
+        <a-box position="-1 0.5 1" rotation="0 0 0" color="#4CC3D9"
+               animation="property: rotation; to: 0 360 0; loop: true; dur: 3000; easing: linear"></a-box>
+        <a-sphere position="0 1.25 -1" radius="1.25" color="#EF2D5E"></a-sphere>
+        <a-cylinder position="1 0.75 1" radius="0.5" height="1.5" color="#FFC65D"
+                    animation="property: rotation; to: 360 0 0; loop: true; dur: 3000; easing: linear"></a-cylinder>
+        <a-plane position="0 0 0" rotation="-90 0 0" width="4" height="4" color="#7BC8A4" side="double"></a-plane>
+        <a-plane position="0 -0.001 0" rotation="-90 0 0" width="10" height="10" color="#3333DD" side="double"></a-plane>
+        <a-plane id="mirror-plane1" position="0 2 -3" rotation="0 0 0" width="4" height="4"
+                 color="#ECECEC" mirror side="back"></a-plane>
+        <a-plane id="mirror-plane2" position="3 2 0" rotation="0 -90 0" width="4" height="4"
+                  color="#ECECEC" mirror side="back"></a-plane>
+        <a-plane id="mirror-plane3" position="0 5 0" rotation="90 0 0" width="4" height="4"
+                 color="#ECECEC" mirror side="back"></a-plane>
+        <a-plane id="mirror-plane4" position="-3 2 0" rotation="0 90 0" width="4" height="4"
+                 color="#ECECEC" mirror side="back">
+        </a-plane>
+
+      </a-entity>
+      <a-sky color="#ECECEC"></a-sky>
+    </a-scene>
+  </body>
+</html>

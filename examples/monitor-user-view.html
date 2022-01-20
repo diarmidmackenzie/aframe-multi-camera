@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+      <script src="../src/multi-camera.js"></script>
+  </head>
+  <body>
+    <a-scene stats>
+      <img id="test-texture" src="https://cdn.aframe.io/examples/ui/kazetachinu.jpg" crossorigin="anonymous"/>
+      <a-entity
+        camera look-controls wasd-controls position="0 1.6 0">
+        <a-entity id="secondary-camera1" secondary-camera="output:plane; outputElement:#texture-plane1; sequence:before">
+        </a-entity>
+      </a-entity>
+      <a-entity id="container" position = "0 0 -6">
+        <a-box position="-1 0.5 1" rotation="0 0 0" color="#4CC3D9"
+               animation="property: rotation; to: 0 360 0; loop: true; dur: 3000; easing: linear"></a-box>
+        <a-sphere position="0 1.25 -1" radius="1.25" color="#EF2D5E"></a-sphere>
+        <a-cylinder position="1 0.75 1" radius="0.5" height="1.5" color="#FFC65D"
+                    animation="property: rotation; to: 360 0 0; loop: true; dur: 3000; easing: linear"></a-cylinder>
+        <a-plane position="0 0 0" rotation="-90 0 0" width="4" height="4" color="#7BC8A4" side="double"></a-plane>
+      </a-entity>
+      <!--This plane displays the camera output.
+          Flat shader is used to render the camera output exactly as received.
+          If the "standard" shader is used instead, you get a fade-out effect
+        -->
+      <a-plane id="texture-plane1" position="0 1 -2" rotation="-45 0 0" width="1" height="1"
+               src='#test-texture' material="shader:flat"></a-plane>
+      <a-sky color="#3C3CEC"></a-sky>
+
+    </a-scene>
+
+    <div style="position:absolute; text-align: center; top: 10px; left: 200px; right: 200px; width: auto; height:100px">
+      Drag with the mouse to look around, and move with WASD.<br/>
+      The screen down in front of you shows your current camera view.<br/>
+      Look at it and you will see an infinite tunnel of camera views.
+    </div>
+  </body>
+</html>

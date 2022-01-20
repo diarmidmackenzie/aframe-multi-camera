@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+      <script src="../aframe/cursor.js"></script>
+      <script src="../src/multi-camera.js"></script>
+      <script src="../examples/mouse-rotate-controls.js"></script>
+      <script>
+        const cameraData = [{index: 1, parent: "#container", position: "-8 1.6 0", rotation: "0 -90 0"},
+                            {index: 2, parent: "#container", position: "8 1.6 0", rotation: "0 90 0"},
+                            {index: 3, parent: "#container", position: "0 8 0", rotation: "-90 0 0"},
+                            {index: 4, parent: "a-scene", position: "-8 1.6 -4", rotation: "0 -90 0"},
+                            {index: 5, parent: "a-scene", position: "8 1.6 -4", rotation: "0 90 0"},
+                            {index: 6, parent: "a-scene", position: "0 8 -4", rotation: "-90 0 0"}];
+        const cameras = Array(6).fill(null);
+        var cameraCount = 0;
+
+        function addCamera(index) {
+          const camera = document.createElement('a-entity');
+
+          camera.setAttribute('id', cameraData[index].index);
+          camera.setAttribute('position', cameraData[index].position);
+          camera.setAttribute('rotation', cameraData[index].rotation);
+          camera.setAttribute('cursor', "rayOrigin: mouse; fuse: false; cursor: user; canvas: user");
+          camera.setAttribute('raycaster', "objects: [raycastable]");
+          camera.setAttribute('secondary-camera', `outputElement:#viewport${cameraData[index].index}`);
+
+          parent = document.querySelector(cameraData[index].parent);
+          parent.appendChild(camera)
+          cameras[index] = camera;
+          cameraCount++;
+        }
+
+        function removeCamera(index) {
+          camera = cameras[index];
+          camera.parentNode.removeChild(camera);
+          cameras[index] = null;
+          cameraCount--;
+        }
+
+        setInterval(() => {
+
+            var index = Math.floor(Math.random() * 6);
+
+            // If lots of cameras already, increase chance of
+            // removing one.
+            // If few cameras, increase chance of
+            // adding one.
+            if (cameraCount >= 4 && !cameras[index]) {
+              index = Math.floor(Math.random() * 6);
+            }
+            else if (cameraCount <= 3 && cameras[index]) {
+              index = Math.floor(Math.random() * 6);
+            }
+
+            if (!cameras[index]) {
+                addCamera(index);
+            } else {
+                removeCamera(index);
+            }
+        }, 1000)
+
+      </script>
+  </head>
+  <body>
+    <a-scene vr-mode-ui="enabled: false">
+      <a-entity camera look-controls="enabled:false" position="0 1.6 0"
+                cursor="rayOrigin: mouse; fuse: false" raycaster="objects: [raycastable]"></a-entity>
+
+      <a-entity id="container" position = "0 0 -4" mouse-rotate-controls>
+        <a-box position="-1 0.5 1" rotation="0 45 0" color="#4CC3D9" raycastable hover></a-box>
+        <a-sphere position="0 1.25 -1" radius="1.25" color="#EF2D5E"raycastable hover></a-sphere>
+        <a-cylinder position="1 0.75 1" radius="0.5" height="1.5" color="#FFC65D" raycastable hover></a-cylinder>
+        <a-plane position="0 0 0" rotation="-90 0 0" width="4" height="4" color="#7BC8A4" side="double" raycastable hover></a-plane>
+
+      </a-entity>
+      <a-sky color="#ECECEC"></a-sky>
+
+    </a-scene>
+
+    <div style="position:absolute; top: 10px; left: 30px; width: 400px; height:200px">
+      These cameras are fixed relative to the objects in the scene.<br/>
+      Camera views are added/removed at random every second.
+    </div>
+    <div id="viewport1" style="position:absolute;  border-style: solid; top: 40px; left: 30px; width: 200px; height:200px">
+    </div>
+    <div id="viewport2" style="position:absolute;  border-style: solid; top: 240px; left: 30px; width: 200px; height:200px">
+    </div>
+    <div id="viewport3"style="position:absolute; border-style: solid; top: 440px; left: 30px; width: 200px; height:200px">
+    </div>
+    <div style="position:absolute; text-align: right; top: 10px; right: 30px; width: 400px; height:200px">
+      These cameras are in fixed world positions.<br/>
+      Camera views are added/removed at random every second.
+    </div>
+    <div id="viewport4" style="position:absolute;  border-style: solid; top: 40px; right: 30px; width: 200px; height:200px">
+    </div>
+    <div id="viewport5" style="position:absolute;  border-style: solid; top: 240px; right: 30px; width: 200px; height:200px">
+    </div>
+    <div id="viewport6"style="position:absolute; border-style: solid; top: 440px; right: 30px; width: 200px; height:200px">
+    </div>
+
+    <div style="position:absolute; text-align: center; top: 10px; left: 200px; right: 200px; width: auto; height:100px">
+      Drag with the mouse to rotate the scene<br/>
+      Hover over an object on any camera to highlight it.
+    </div>
+
+  </body>
+</html>
