@@ -76,10 +76,10 @@ You can either download them and include them like this:
 Or via JSDelivr CDN (check the releases in the repo for the best version number to use)
 
 ```
-<script src="https://cdn.jsdelivr.net/gh/diarmidmackenzie/multi-camera@latest/aframe/cursor.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/diarmidmackenzie/multi-camera@latest/src/multi-camera.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/diarmidmackenzie/multi-camera@latest/src/viewpoint-selector.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/diarmidmackenzie/multi-camera@latest/src/mirror.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/diarmidmackenzie/aframe-multi-camera@latest/aframe/cursor.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/diarmidmackenzie/aframe-multi-camera@latest/src/multi-camera.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/diarmidmackenzie/aframe-multi-camera@latest/src/viewpoint-selector.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/diarmidmackenzie/aframe-multi-camera@latest/src/mirror.min.js"></script>	
 ```
 
 Theses components are not yet available in npm.  If that would be useful to you, please raise an issue against the repo and I'll work on it...
