@@ -3,18 +3,18 @@ https://github.com/mrdoob/three.js/blob/dev/examples/jsm/objects/Reflector.js
 */
 
 const	Color = THREE.Color;
-const	LinearFilter = THREE.LinearFilter;
-const	MathUtils = THREE.MathUtils;
 const	Matrix4 = THREE.Matrix4;
 const	Mesh = THREE.Mesh;
 const	PerspectiveCamera = THREE.PerspectiveCamera;
 const	Plane = THREE.Plane;
-const	RGBFormat = THREE.RGBFormat;
 const	ShaderMaterial = THREE.ShaderMaterial;
 const	UniformsUtils = THREE.UniformsUtils;
 const	Vector3 = THREE.Vector3;
 const	Vector4 = THREE.Vector4;
 const	WebGLRenderTarget = THREE.WebGLRenderTarget;
+const HalfFloatType = THREE.HalfFloatType;
+const NoToneMapping = THREE.NoToneMapping;
+const LinearEncoding = THREE.LinearEncoding;
 
 class Reflector extends Mesh {
 
@@ -22,7 +22,10 @@ class Reflector extends Mesh {
 
 		super( geometry );
 
+		this.isReflector = true;
+
 		this.type = 'Reflector';
+		this.camera = new PerspectiveCamera();
 
 		const scope = this;
 
@@ -31,6 +34,7 @@ class Reflector extends Mesh {
 		const textureHeight = options.textureHeight || 512;
 		const clipBias = options.clipBias || 0;
 		const shader = options.shader || Reflector.ReflectorShader;
+		const multisample = ( options.multisample !== undefined ) ? options.multisample : 4;
 
 		//
 
@@ -47,21 +51,9 @@ class Reflector extends Mesh {
 		const q = new Vector4();
 
 		const textureMatrix = new Matrix4();
-		const virtualCamera = new PerspectiveCamera();
+		const virtualCamera = this.camera;
 
-		const parameters = {
-			minFilter: LinearFilter,
-			magFilter: LinearFilter,
-			format: RGBFormat
-		};
-
-		const renderTarget = new WebGLRenderTarget( textureWidth, textureHeight, parameters );
-
-		if ( ! MathUtils.isPowerOfTwo( textureWidth ) || ! MathUtils.isPowerOfTwo( textureHeight ) ) {
-
-			renderTarget.texture.generateMipmaps = false;
-
-		}
+		const renderTarget = new WebGLRenderTarget( textureWidth, textureHeight, { samples: multisample, type: HalfFloatType } );
 
 		const material = new ShaderMaterial( {
 			uniforms: UniformsUtils.clone( shader.uniforms ),
@@ -150,18 +142,19 @@ class Reflector extends Mesh {
 			projectionMatrix.elements[ 14 ] = clipPlane.w;
 
 			// Render
-
-			renderTarget.texture.encoding = renderer.outputEncoding;
-
 			scope.visible = false;
 
 			const currentRenderTarget = renderer.getRenderTarget();
 
 			const currentXrEnabled = renderer.xr.enabled;
 			const currentShadowAutoUpdate = renderer.shadowMap.autoUpdate;
+			const currentOutputEncoding = renderer.outputEncoding;
+			const currentToneMapping = renderer.toneMapping;
 
 			renderer.xr.enabled = false; // Avoid camera modification
 			renderer.shadowMap.autoUpdate = false; // Avoid re-computing shadows
+			renderer.outputEncoding = LinearEncoding;
+			renderer.toneMapping = NoToneMapping;
 
 			renderer.setRenderTarget( renderTarget );
 
@@ -172,6 +165,8 @@ class Reflector extends Mesh {
 
 			renderer.xr.enabled = currentXrEnabled;
 			renderer.shadowMap.autoUpdate = currentShadowAutoUpdate;
+			renderer.outputEncoding = currentOutputEncoding;
+			renderer.toneMapping = currentToneMapping;
 
 			renderer.setRenderTarget( currentRenderTarget );
 
@@ -206,8 +201,6 @@ class Reflector extends Mesh {
 
 }
 
-Reflector.prototype.isReflector = true;
-
 Reflector.ReflectorShader = {
 
 	uniforms: {
@@ -229,49 +222,33 @@ Reflector.ReflectorShader = {
 	vertexShader: /* glsl */`
 		uniform mat4 textureMatrix;
 		varying vec4 vUv;
-
 		#include <common>
 		#include <logdepthbuf_pars_vertex>
-
 		void main() {
-
 			vUv = textureMatrix * vec4( position, 1.0 );
-
 			gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
-
 			#include <logdepthbuf_vertex>
-
 		}`,
 
 	fragmentShader: /* glsl */`
 		uniform vec3 color;
 		uniform sampler2D tDiffuse;
 		varying vec4 vUv;
-
 		#include <logdepthbuf_pars_fragment>
-
 		float blendOverlay( float base, float blend ) {
-
 			return( base < 0.5 ? ( 2.0 * base * blend ) : ( 1.0 - 2.0 * ( 1.0 - base ) * ( 1.0 - blend ) ) );
-
 		}
-
 		vec3 blendOverlay( vec3 base, vec3 blend ) {
-
 			return vec3( blendOverlay( base.r, blend.r ), blendOverlay( base.g, blend.g ), blendOverlay( base.b, blend.b ) );
-
 		}
-
 		void main() {
-
 			#include <logdepthbuf_fragment>
-
 			vec4 base = texture2DProj( tDiffuse, vUv );
 			gl_FragColor = vec4( blendOverlay( base.rgb, color ), 1.0 );
-
+			#include <tonemapping_fragment>
+			#include <encodings_fragment>
 		}`
 };
-
 
 /* Add this component to an <a-plane> to turn it into a mirror
     */
