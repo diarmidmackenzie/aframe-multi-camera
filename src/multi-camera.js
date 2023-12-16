@@ -190,6 +190,9 @@ AFRAME.registerComponent('secondary-camera', {
         }
 
         this.savedViewport = new THREE.Vector4();
+        this.savedScissorTest = false;
+        this.savedScissor = new THREE.Vector4();
+        this.outputRectangle = new THREE.Vector4();
         this.sceneInfo = this.prepareScene();
         this.activeRenderTarget = 0;
 
@@ -321,14 +324,21 @@ AFRAME.registerComponent('secondary-camera', {
           const mainRect = renderer.domElement.getBoundingClientRect();
 
           renderer.getViewport(this.savedViewport);
+          this.savedScissorTest = renderer.getScissorTest();
+          renderer.getScissor(this.savedScissor);
 
-          renderer.setViewport(elemRect.left - mainRect.left,
-                               mainRect.bottom - elemRect.bottom,
-                               elemRect.width,
-                               elemRect.height);
+          this.outputRectangle.set(elemRect.left - mainRect.left,
+                                   mainRect.bottom - elemRect.bottom,
+                                   elemRect.width,
+                                   elemRect.height);
+          renderer.setViewport(this.outputRectangle);
+          renderer.setScissorTest(true);
+          renderer.setScissor(this.outputRectangle);
 
           renderFunction.call(renderer, this.scene, this.camera);
           renderer.setViewport(this.savedViewport);
+          renderer.setScissorTest(this.savedScissorTest);
+          renderer.setScissor(this.savedScissor);
         }
         else {
           // target === "plane"
@@ -338,7 +348,7 @@ AFRAME.registerComponent('secondary-camera', {
           const currentXrEnabled = renderer.xr.enabled;
           const currentShadowAutoUpdate = renderer.shadowMap.autoUpdate;
 
-          // temporarily override renderer proeperties for rendering to a texture.
+          // temporarily override renderer properties for rendering to a texture.
           renderer.xr.enabled = false; // Avoid camera modification
           renderer.shadowMap.autoUpdate = false; // Avoid re-computing shadows
 
