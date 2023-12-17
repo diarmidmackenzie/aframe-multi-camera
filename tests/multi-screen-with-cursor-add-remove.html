@@ -21,7 +21,7 @@
           camera.setAttribute('id', cameraData[index].index);
           camera.setAttribute('position', cameraData[index].position);
           camera.setAttribute('rotation', cameraData[index].rotation);
-          camera.setAttribute('cursor', "rayOrigin: mouse; fuse: false; cursor: user; canvas: user");
+          camera.setAttribute('cursor', "rayOrigin: mouse; fuse: false; camera: user; canvas: user");
           camera.setAttribute('raycaster', "objects: [raycastable]");
           camera.setAttribute('secondary-camera', `outputElement:#viewport${cameraData[index].index}`);
 
