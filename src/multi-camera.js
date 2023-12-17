@@ -56,6 +56,16 @@ AFRAME.registerSystem('add-render-call', {
 
     renderer = this.el.sceneEl.renderer
 
+    if (scene !== this.el.sceneEl.object3D || 
+        camera != this.el.sceneEl.camera) {
+      // Render call is for a different scene (e.g. generating a texture from a cubemap)
+      // or not the main camera.
+      // Don't apply any pre- or post-render calls, just let the rendere function as
+      // normal.
+      this.originalRender.call(renderer, scene, camera)
+      return
+    }
+
     // set up THREE.js stats to correctly count across all render calls.
     renderer.info.autoReset = false;
     renderer.info.reset();
