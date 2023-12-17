@@ -4,7 +4,7 @@
    https://github.com/aframevr/aframe/blob/25f09c11f84a60f5c078b112154688ccbadf20ff/src/components/cursor.js
 
    Use as follows:
-   <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
    <script src="cursor.js"></script>
 */
 

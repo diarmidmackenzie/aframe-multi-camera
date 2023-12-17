@@ -1,6 +1,8 @@
 # aframe-multi-camera
 
-https://user-images.githubusercontent.com/16045703/150434386-91181ba5-4162-4e15-a100-bf1576dba8ba.mp4
+<video src="https://user-images.githubusercontent.com/16045703/150434386-91181ba5-4162-4e15-a100-bf1576dba8ba.mp4" controls="controls" style="max-width: 730px;">
+</video>
+
 
 
 ## Overview
@@ -16,23 +18,23 @@ We have the following examples:
 
 #### Multiple Cameras
 
-Multiple cameras and canvases: https://diarmidmackenzie.github.io/aframe-multi-camera/examples/multi-screen.html
+[Multiple cameras and canvases](https://diarmidmackenzie.github.io/aframe-multi-camera/examples/multi-screen.html)
 
-Cursor use across multiple secondary cameras: https://diarmidmackenzie.github.io/aframe-multi-camera/examples/multi-screen-with-cursor.html
+[Cursor use across multiple secondary cameras](https://diarmidmackenzie.github.io/aframe-multi-camera/examples/multi-screen-with-cursor.html)
 
-Multiple camera views embedded in an HTML page without any background full-screen A-Frame scene: https://diarmidmackenzie.github.io/aframe-multi-camera/examples/embedded-views.html
+[Multiple camera views embedded in an HTML page without any background full-screen A-Frame scene](https://diarmidmackenzie.github.io/aframe-multi-camera/examples/embedded-views.html)
 
-Secondary cameras rendering to planes in the scene, to create a CCTV monitor effect: https://diarmidmackenzie.github.io/aframe-multi-camera/examples/camera-texture.html
+[Secondary cameras rendering to planes in the scene, to create a CCTV monitor effect](https://diarmidmackenzie.github.io/aframe-multi-camera/examples/camera-texture.html)
 
-Primary camera rendering to a plane in the scene, to create a CCTV monitor effect: https://diarmidmackenzie.github.io/aframe-multi-camera/examples/monitor-user-view.html
+[Primary camera rendering to a plane in the scene, to create a CCTV monitor effect](https://diarmidmackenzie.github.io/aframe-multi-camera/examples/monitor-user-view.html)
 
-Mirrors rendered to planes in the scene: https://diarmidmackenzie.github.io/aframe-multi-camera/examples/mirror-example.html
+[Mirrors rendered to planes in the scene](https://diarmidmackenzie.github.io/aframe-multi-camera/examples/mirror-example.html)
 
 ### Viewpoint Selector
 
-A basic example of a scene where the central objects can be manipulated using the viewpoint-selector: https://diarmidmackenzie.github.io/aframe-multi-camera/examples/viewpoint-selector-basic.html
+A [basic example](https://diarmidmackenzie.github.io/aframe-multi-camera/examples/viewpoint-selector-basic.html) of a scene where the central objects can be manipulated using the viewpoint-selector: 
 
-A second example, demonstrating various different configuration options for the viewpoint selector.https://diarmidmackenzie.github.io/aframe-multi-camera/examples/viewpoint-selector-alternate.html
+A [second example](https://diarmidmackenzie.github.io/aframe-multi-camera/examples/viewpoint-selector-alternate.html), demonstrating various different configuration options for the viewpoint selector.
 
 
 ## Components
