@@ -1,20 +1,23 @@
 /* This code comes from THREE.js
 https://github.com/mrdoob/three.js/blob/dev/examples/jsm/objects/Reflector.js
+
+Last updated on 17/12/2023 from 
+https://github.com/mrdoob/three.js/blob/46b6bb0ab34427b36bc25c4747db2bcdb88905bf/examples/jsm/objects/Reflector.js
 */
 
-const	Color = THREE.Color;
-const	LinearFilter = THREE.LinearFilter;
-const	MathUtils = THREE.MathUtils;
-const	Matrix4 = THREE.Matrix4;
-const	Mesh = THREE.Mesh;
-const	PerspectiveCamera = THREE.PerspectiveCamera;
-const	Plane = THREE.Plane;
-const	RGBFormat = THREE.RGBFormat;
-const	ShaderMaterial = THREE.ShaderMaterial;
-const	UniformsUtils = THREE.UniformsUtils;
-const	Vector3 = THREE.Vector3;
-const	Vector4 = THREE.Vector4;
-const	WebGLRenderTarget = THREE.WebGLRenderTarget;
+const {
+	Color,
+	Matrix4,
+	Mesh,
+	PerspectiveCamera,
+	Plane,
+	ShaderMaterial,
+	UniformsUtils,
+	Vector3,
+	Vector4,
+	WebGLRenderTarget,
+	HalfFloatType
+} = THREE
 
 class Reflector extends Mesh {
 
@@ -22,7 +25,10 @@ class Reflector extends Mesh {
 
 		super( geometry );
 
+		this.isReflector = true;
+
 		this.type = 'Reflector';
+		this.camera = new PerspectiveCamera();
 
 		const scope = this;
 
@@ -31,6 +37,7 @@ class Reflector extends Mesh {
 		const textureHeight = options.textureHeight || 512;
 		const clipBias = options.clipBias || 0;
 		const shader = options.shader || Reflector.ReflectorShader;
+		const multisample = ( options.multisample !== undefined ) ? options.multisample : 4;
 
 		//
 
@@ -47,23 +54,12 @@ class Reflector extends Mesh {
 		const q = new Vector4();
 
 		const textureMatrix = new Matrix4();
-		const virtualCamera = new PerspectiveCamera();
+		const virtualCamera = this.camera;
 
-		const parameters = {
-			minFilter: LinearFilter,
-			magFilter: LinearFilter,
-			format: RGBFormat
-		};
-
-		const renderTarget = new WebGLRenderTarget( textureWidth, textureHeight, parameters );
-
-		if ( ! MathUtils.isPowerOfTwo( textureWidth ) || ! MathUtils.isPowerOfTwo( textureHeight ) ) {
-
-			renderTarget.texture.generateMipmaps = false;
-
-		}
+		const renderTarget = new WebGLRenderTarget( textureWidth, textureHeight, { samples: multisample, type: HalfFloatType } );
 
 		const material = new ShaderMaterial( {
+			name: ( shader.name !== undefined ) ? shader.name : 'unspecified',
 			uniforms: UniformsUtils.clone( shader.uniforms ),
 			fragmentShader: shader.fragmentShader,
 			vertexShader: shader.vertexShader
@@ -150,9 +146,6 @@ class Reflector extends Mesh {
 			projectionMatrix.elements[ 14 ] = clipPlane.w;
 
 			// Render
-
-			renderTarget.texture.encoding = renderer.outputEncoding;
-
 			scope.visible = false;
 
 			const currentRenderTarget = renderer.getRenderTarget();
@@ -206,9 +199,9 @@ class Reflector extends Mesh {
 
 }
 
-Reflector.prototype.isReflector = true;
-
 Reflector.ReflectorShader = {
+
+	name: 'ReflectorShader',
 
 	uniforms: {
 
@@ -269,9 +262,11 @@ Reflector.ReflectorShader = {
 			vec4 base = texture2DProj( tDiffuse, vUv );
 			gl_FragColor = vec4( blendOverlay( base.rgb, color ), 1.0 );
 
+			#include <tonemapping_fragment>
+			#include <colorspace_fragment>
+
 		}`
 };
-
 
 /* Add this component to an <a-plane> to turn it into a mirror
     */
@@ -311,3 +306,4 @@ AFRAME.registerComponent('mirror', {
   }
 
 });
+
