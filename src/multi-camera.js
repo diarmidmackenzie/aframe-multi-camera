@@ -54,7 +54,7 @@ AFRAME.registerSystem('add-render-call', {
 
   render(scene, camera) {
 
-    renderer = this.el.sceneEl.renderer
+    const renderer = this.el.sceneEl.renderer
 
     if (scene !== this.el.sceneEl.object3D || 
         camera != this.el.sceneEl.camera) {
@@ -186,7 +186,7 @@ AFRAME.registerComponent('layers', {
 
 AFRAME.registerComponent('secondary-camera', {
     schema: {
-        output: {type: 'string', oneOf: ['screen', 'plane'], default: 'screen'},
+        output: {type: 'string', oneOf: ['screen', 'plane', 'circle'], default: 'screen'},
         outputElement: {type: 'selector'},
         cameraType: {type: 'string', oneOf: ['perspective, orthographic'], default: 'perspective'},
         sequence: {type: 'string', oneOf: ['before', 'after', 'replace'], default: 'after'},
@@ -231,18 +231,18 @@ AFRAME.registerComponent('secondary-camera', {
             });
         }
 
-        if (this.data.output === 'plane') {
+        if (this.data.output === 'plane' || this.data.output === 'circle') {
           if (!this.data.outputElement.hasLoaded) {
             this.data.outputElement.addEventListener("loaded", () => {
-              this.configureCameraToPlane()
+              this.configureCameraToPlaneOrCircle()
             });
           } else {
-            this.configureCameraToPlane()
+            this.configureCameraToPlaneOrCircle()
           }
         }
     },
 
-    configureCameraToPlane() {
+    configureCameraToPlaneOrCircle() {
       const object = this.data.outputElement.getObject3D('mesh');
       function nearestPowerOf2(n) {
         return 1 << 31 - Math.clz32(n);
@@ -270,9 +270,12 @@ AFRAME.registerComponent('secondary-camera', {
       this.renderTargets = [newRenderTarget(),
                             newRenderTarget()]
 
-      this.camera.aspect = object.geometry.parameters.width /
-                           object.geometry.parameters.height;
-
+      if (this.data.output === 'circle') {
+        this.camera.aspect = 1;
+      } else {
+        this.camera.aspect = object.geometry.parameters.width /
+                             object.geometry.parameters.height;
+      }
     },
 
     remove() {
@@ -363,7 +366,7 @@ AFRAME.registerComponent('secondary-camera', {
           renderer.shadowMap.autoUpdate = false; // Avoid re-computing shadows
 
           const renderTarget = this.renderTargets[this.activeRenderTarget];
-          renderTarget.texture.encoding = renderer.outputEncoding;
+          renderTarget.texture.colorSpace = renderer.outputColorSpace;
           renderer.setRenderTarget(renderTarget);
           renderer.state.buffers.depth.setMask( true ); // make sure the depth buffer is writable so it can be properly cleared, see #18897
           renderer.clear();
