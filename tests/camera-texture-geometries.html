@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+      <script src="../src/multi-camera.js"></script>
+  </head>
+  <body>
+      <a-scene stats>
+        <img id="test-texture" src="https://cdn.aframe.io/examples/ui/kazetachinu.jpg" crossorigin="anonymous"/>
+        <a-entity id="container" position = "0 0 -6">
+          <a-box position="-1 0.5 1" rotation="0 0 0" color="#4CC3D9"
+                 animation="property: rotation; to: 0 360 0; loop: true; dur: 3000; easing: linear"></a-box>
+          <a-sphere position="0 1.25 -1" radius="1.25" color="#EF2D5E"></a-sphere>
+          <a-cylinder position="1 0.75 1" radius="0.5" height="1.5" color="#FFC65D"
+                      animation="property: rotation; to: 360 0 0; loop: true; dur: 3000; easing: linear"></a-cylinder>
+          <a-plane position="0 0 0" rotation="-90 0 0" width="4" height="4" color="#7BC8A4" side="double"></a-plane>
+        </a-entity>
+        <a-circle id="texture-geometry1" position="-3 1 -2" rotation="-45 0 0" radius="0.5"
+                 src='#test-texture'></a-circle>
+        <a-torus id="texture-geometry2" position="-1.5 1 -2" rotation="-45 0 0" radius="0.5" radius-tubular="0.1"
+                 src='#test-texture'></a-torus>
+        <a-triangle id="texture-geometry3" position="1.5 1 -2" rotation="-45 0 0" width="1" height="1"
+                 src='#test-texture'></a-triangle>
+        <a-sphere id="texture-geometry4" position="3 1 -2" rotation="-45 0 0" radius="0.5" 
+                 src='#test-texture'></a-sphere>
+
+        <a-entity id="camera1" secondary-camera="output:space; outputElement:#texture-geometry1; sequence:before"
+                  position="0 9 -6" rotation="-90 0 0">
+        </a-entity>
+        <a-entity id="camera2" secondary-camera="output:space; outputElement:#texture-geometry2; sequence:before"
+                  position="6 1.6 -12" rotation="0 135 0">
+        </a-entity>
+        <a-entity id="camera3" secondary-camera="output:space; outputElement:#texture-geometry3; sequence:before"
+                  position="-6 1.6 -6" rotation="0 -90 0">
+        </a-entity>
+        <a-entity id="camera4" secondary-camera="output:space; outputElement:#texture-geometry4; sequence:before"
+                  position="6 1.6 -6" rotation="0 90 0">
+        </a-entity>
+
+        <a-sky color="#ECECEC"></a-sky>
+
+      </a-scene>
+
+    <div style="position:absolute; text-align: center; top: 10px; left: 200px; right: 200px; width: auto; height:100px">
+      Drag with the mouse to look around, and move with WASD.<br/>
+      The geometries in the scene in front of you show various different camera angles on the shapes.<br/>
+      All rendered onto planes within the A-Frame scene itself.
+    </div>
+  </body>
+</html>
