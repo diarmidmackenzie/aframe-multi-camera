@@ -234,7 +234,12 @@ AFRAME.registerComponent('secondary-camera', {
             });
         }
 
-        if (this.data.output != 'screen') {
+        if (this.data.output !== 'screen') {
+
+          if (this.data.output === 'plane') {
+            console.warn("schema warning for secondary-camera component: output:scene is deprecated.  Please use output:scene instead.")
+          }
+
           if (!this.data.outputElement.hasLoaded) {
             this.data.outputElement.addEventListener("loaded", () => {
               this.configureCamera()
@@ -281,7 +286,6 @@ AFRAME.registerComponent('secondary-camera', {
         else {
           this.camera.aspect = 1;
         }
-        
       } else {
         this.camera.aspect = this.aspectRatio;
       }
