@@ -274,8 +274,14 @@ AFRAME.registerComponent('secondary-camera', {
                             newRenderTarget()]
 
       if (this.aspectRatio === 'auto') {
-        this.camera.aspect = object.geometry.parameters.width /
+        if (object.geometry.parameters.width && object.geometry.parameters.height) {
+          this.camera.aspect = object.geometry.parameters.width /
                               object.geometry.parameters.height;
+        }
+        else {
+          this.camera.aspect = 1;
+        }
+        
       } else {
         this.camera.aspect = this.aspectRatio;
       }
