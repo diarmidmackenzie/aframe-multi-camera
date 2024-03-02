@@ -326,7 +326,7 @@ AFRAME.registerComponent('secondary-camera', {
         // don't bother rendering to screen in VR mode.
         if (this.data.output === "screen" && this.el.sceneEl.is('vr-mode')) return;
 
-        var elemRect;
+        let elemRect;
 
         if (this.data.output === "screen") {
             const elem = this.data.outputElement;
@@ -354,8 +354,10 @@ AFRAME.registerComponent('secondary-camera', {
           this.savedScissorTest = renderer.getScissorTest();
           renderer.getScissor(this.savedScissor);
 
-          const hScale = 0.8 * canvas.width / mainRect.width 
-          const vScale = 0.8 * canvas.height / mainRect.height
+          const pixelRatio = renderer.getPixelRatio()
+          const hScale = (canvas.width / mainRect.width) / pixelRatio
+          const vScale = (canvas.height / mainRect.height) / pixelRatio
+          
           this.outputRectangle.set(hScale * (elemRect.left - mainRect.left),
                                     vScale * (mainRect.bottom - elemRect.bottom),
                                     hScale * elemRect.width,
