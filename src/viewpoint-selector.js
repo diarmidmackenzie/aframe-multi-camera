@@ -365,9 +365,9 @@ AFRAME.registerComponent('viewpoint-selector', {
 
         angle = this.angles[id];
 
-        this.tempEuler.set(THREE.Math.degToRad(angle.x),
-                           THREE.Math.degToRad(angle.y),
-                           THREE.Math.degToRad(angle.z))
+        this.tempEuler.set(THREE.MathUtils.degToRad(angle.x),
+                           THREE.MathUtils.degToRad(angle.y),
+                           THREE.MathUtils.degToRad(angle.z))
         this.targetQuaternion.setFromEuler(this.tempEuler);
         this.targetQuaternion.multiply(this.selectorToGroupQuaternion);
 

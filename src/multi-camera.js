@@ -54,9 +54,9 @@ AFRAME.registerSystem('add-render-call', {
 
   render(scene, camera) {
 
-    renderer = this.el.sceneEl.renderer
+    const renderer = this.el.sceneEl.renderer
 
-    if (scene !== this.el.sceneEl.object3D || 
+    if (scene !== this.el.sceneEl.object3D ||
         camera != this.el.sceneEl.camera) {
       // Render call is for a different scene (e.g. generating a texture from a cubemap)
       // or not the main camera.
@@ -81,8 +81,8 @@ AFRAME.registerSystem('add-render-call', {
 });
 
 /* Component that captures the main A-Frame render() call
-   and adds an additional render call.
-   Must specify an entity and component that expose a function call render(). */
+    and adds an additional render call.
+    Must specify an entity and component that expose a function call render(). */
 AFRAME.registerComponent('add-render-call', {
 
   multiple: true,
@@ -115,7 +115,7 @@ AFRAME.registerComponent('add-render-call', {
 
     if (this.data.sequence === "after" ||
         this.data.sequence === "replace")
-     {
+      {
       this.system.addPostRenderCall(this.invokeRender)
     }
   },
@@ -135,7 +135,7 @@ AFRAME.registerComponent('add-render-call', {
 
     if (data.sequence === "after" ||
         data.sequence === "replace")
-     {
+      {
       this.system.removePostRenderCall(this.invokeRender)
     }
   },
@@ -177,20 +177,21 @@ AFRAME.registerComponent('layers', {
 });
 
 /* This component has code in common with viewpoint-selector-renderer
-   However it's a completely generic stripped-down version, which
-   just delivers the 2nd camera function.
-   i.e. it is missing:
-   - The positioning of the viewpoint-selector entity.
-   - The cursor / raycaster elements.
+    However it's a completely generic stripped-down version, which
+    just delivers the 2nd camera function.
+    i.e. it is missing:
+    - The positioning of the viewpoint-selector entity.
+    - The cursor / raycaster elements.
 */
 
 AFRAME.registerComponent('secondary-camera', {
     schema: {
-        output: {type: 'string', oneOf: ['screen', 'plane'], default: 'screen'},
+        output: {type: 'string', oneOf: ['screen', 'scene', 'plane'], default: 'screen'}, //'plane' is there for backwards compatibility
         outputElement: {type: 'selector'},
         cameraType: {type: 'string', oneOf: ['perspective, orthographic'], default: 'perspective'},
         sequence: {type: 'string', oneOf: ['before', 'after', 'replace'], default: 'after'},
-        quality: {type: 'string', oneOf: ['high, low'], default: 'high'}
+        quality: {type: 'string', oneOf: ['high, low'], default: 'high'},
+        aspectRatio: {type: 'string', default: 'auto'}
     },
 
     init() {
@@ -205,12 +206,14 @@ AFRAME.registerComponent('secondary-camera', {
         this.outputRectangle = new THREE.Vector4();
         this.sceneInfo = this.prepareScene();
         this.activeRenderTarget = 0;
-
-
+        if (this.data.aspectRatio !== 'auto' && isNaN(parseFloat(this.data.aspectRatio))) {
+          console.error("aspectRatio must be a number or 'auto'");
+        }
+        this.aspectRatio = (this.data.aspectRatio === 'auto') ? 'auto' : parseFloat(this.data.aspectRatio);
 
         // add the render call to the scene
         this.el.sceneEl.setAttribute(`add-render-call__${this.el.id}`,
-                                     {entity: `#${this.el.id}`,
+                                      {entity: `#${this.el.id}`,
                                       componentName: "secondary-camera",
                                       sequence: this.data.sequence});
 
@@ -231,18 +234,23 @@ AFRAME.registerComponent('secondary-camera', {
             });
         }
 
-        if (this.data.output === 'plane') {
+        if (this.data.output !== 'screen') {
+
+          if (this.data.output === 'plane') {
+            console.warn("schema warning for secondary-camera component: output:scene is deprecated.  Please use output:scene instead.")
+          }
+
           if (!this.data.outputElement.hasLoaded) {
             this.data.outputElement.addEventListener("loaded", () => {
-              this.configureCameraToPlane()
+              this.configureCamera()
             });
           } else {
-            this.configureCameraToPlane()
+            this.configureCamera()
           }
         }
     },
 
-    configureCameraToPlane() {
+    configureCamera() {
       const object = this.data.outputElement.getObject3D('mesh');
       function nearestPowerOf2(n) {
         return 1 << 31 - Math.clz32(n);
@@ -255,24 +263,32 @@ AFRAME.registerComponent('secondary-camera', {
 
       function newRenderTarget() {
         const target = new THREE.WebGLRenderTarget(width,
-                                                   height,
-                                                   {
+                                                    height,
+                                                    {
                                                       minFilter: THREE.LinearFilter,
                                                       magFilter: THREE.LinearFilter,
                                                       stencilBuffer: false,
                                                       generateMipmaps: false
                                                     });
 
-         return target;
+          return target;
       }
       // We use 2 render targets, and alternate each frame, so that we are
       // never rendering to a target that is actually in front of the camera.
       this.renderTargets = [newRenderTarget(),
                             newRenderTarget()]
 
-      this.camera.aspect = object.geometry.parameters.width /
-                           object.geometry.parameters.height;
-
+      if (this.aspectRatio === 'auto') {
+        if (object.geometry.parameters.width && object.geometry.parameters.height) {
+          this.camera.aspect = object.geometry.parameters.width /
+                              object.geometry.parameters.height;
+        }
+        else {
+          this.camera.aspect = 1;
+        }
+      } else {
+        this.camera.aspect = this.aspectRatio;
+      }
     },
 
     remove() {
@@ -313,11 +329,11 @@ AFRAME.registerComponent('secondary-camera', {
         var elemRect;
 
         if (this.data.output === "screen") {
-           const elem = this.data.outputElement;
+            const elem = this.data.outputElement;
 
-           // get the viewport relative position of this element
-           elemRect = elem.getBoundingClientRect();
-           this.camera.aspect = elemRect.width / elemRect.height;
+            // get the viewport relative position of this element
+            elemRect = elem.getBoundingClientRect();
+            this.camera.aspect = elemRect.width / elemRect.height;
         }
 
         // Camera position & layers match this entity.
@@ -341,9 +357,9 @@ AFRAME.registerComponent('secondary-camera', {
           const hScale = 0.8 * canvas.width / mainRect.width 
           const vScale = 0.8 * canvas.height / mainRect.height
           this.outputRectangle.set(hScale * (elemRect.left - mainRect.left),
-                                   vScale * (mainRect.bottom - elemRect.bottom),
-                                   hScale * elemRect.width,
-                                   vScale * elemRect.height);
+                                    vScale * (mainRect.bottom - elemRect.bottom),
+                                    hScale * elemRect.width,
+                                    vScale * elemRect.height);
 
           renderer.setViewport(this.outputRectangle);
           renderer.setScissorTest(true);
@@ -367,7 +383,7 @@ AFRAME.registerComponent('secondary-camera', {
           renderer.shadowMap.autoUpdate = false; // Avoid re-computing shadows
 
           const renderTarget = this.renderTargets[this.activeRenderTarget];
-          renderTarget.texture.encoding = renderer.outputEncoding;
+          renderTarget.texture.colorSpace = renderer.outputColorSpace;
           renderer.setRenderTarget(renderTarget);
           renderer.state.buffers.depth.setMask( true ); // make sure the depth buffer is writable so it can be properly cleared, see #18897
           renderer.clear();

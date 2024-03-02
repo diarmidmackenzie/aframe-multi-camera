@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-      <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+      <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
       <script src="../src/multi-camera.js"></script>
       <script>
         const NUM_CAMERAS = 4;
@@ -19,7 +19,7 @@
           camera.setAttribute('id', cameraData[index].index);
           camera.setAttribute('position', cameraData[index].position);
           camera.setAttribute('rotation', cameraData[index].rotation);
-          camera.setAttribute('secondary-camera', `output:plane; outputElement:#texture-plane${cameraData[index].index}; sequence: before`);
+          camera.setAttribute('secondary-camera', `output:scene; outputElement:#texture-plane${cameraData[index].index}; sequence: before`);
 
           parent = document.querySelector(cameraData[index].parent);
           parent.appendChild(camera)
