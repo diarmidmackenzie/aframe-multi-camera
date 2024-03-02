@@ -228,7 +228,7 @@ AFRAME.registerComponent('secondary-camera', {
                 cursor.removeEventListeners();
                 cursor.camera = this.camera;
                 cursor.canvas = this.data.outputElement;
-                cursor.canvasBounds = cursor.canvas.getBoundingClientRect();
+                cursor.canvasBounds = this.getInnerRectFromElement(cursor.canvas);
                 cursor.addEventListeners();
                 cursor.updateMouseEventListeners();
             });
@@ -326,13 +326,14 @@ AFRAME.registerComponent('secondary-camera', {
         // don't bother rendering to screen in VR mode.
         if (this.data.output === "screen" && this.el.sceneEl.is('vr-mode')) return;
 
-        var elemRect;
+        let elemRect;
 
         if (this.data.output === "screen") {
             const elem = this.data.outputElement;
 
             // get the viewport relative position of this element
-            elemRect = elem.getBoundingClientRect();
+            elemRect = this.getInnerRectFromElement(elem);
+
             this.camera.aspect = elemRect.width / elemRect.height;
         }
 
@@ -348,14 +349,15 @@ AFRAME.registerComponent('secondary-camera', {
           // We need to turn this into a distance from the bottom of the canvas.
           // We need to consider the header bar above the canvas, and the size of the canvas.
           const canvas = renderer.domElement
-          const mainRect = canvas.getBoundingClientRect();
+          const mainRect = this.getInnerRectFromElement(canvas)
 
           renderer.getViewport(this.savedViewport);
           this.savedScissorTest = renderer.getScissorTest();
           renderer.getScissor(this.savedScissor);
 
-          const hScale = 0.8 * canvas.width / mainRect.width 
-          const vScale = 0.8 * canvas.height / mainRect.height
+          const pixelRatio = renderer.getPixelRatio()
+          const hScale = (canvas.width / mainRect.width) / pixelRatio
+          const vScale = (canvas.height / mainRect.height) / pixelRatio
           this.outputRectangle.set(hScale * (elemRect.left - mainRect.left),
                                     vScale * (mainRect.bottom - elemRect.bottom),
                                     hScale * elemRect.width,
@@ -399,5 +401,28 @@ AFRAME.registerComponent('secondary-camera', {
 
           this.activeRenderTarget = 1 - this.activeRenderTarget;
         }
+    },
+
+    getInnerRectFromElement(el) {
+      const rect = el.getBoundingClientRect();
+      const style = getComputedStyle(el);
+
+      // Calculate border widths
+      const borderTopWidth = parseInt(style.borderTopWidth, 10);
+      const borderRightWidth = parseInt(style.borderRightWidth, 10);
+      const borderBottomWidth = parseInt(style.borderBottomWidth, 10);
+      const borderLeftWidth = parseInt(style.borderLeftWidth, 10);
+
+      rect.x += borderLeftWidth
+      rect.y += borderTopWidth
+      rect.left += borderLeftWidth
+      rect.right -= borderRightWidth
+      rect.top += borderTopWidth
+      rect.bottom -= borderBottomWidth
+      rect.width -= (borderLeftWidth + borderRightWidth)
+      rect.height -= (borderTopWidth + borderBottomWidth)
+
+      return rect
     }
 });
+
