@@ -19,7 +19,7 @@
           camera.setAttribute('id', cameraData[index].index);
           camera.setAttribute('position', cameraData[index].position);
           camera.setAttribute('rotation', cameraData[index].rotation);
-          camera.setAttribute('secondary-camera', `output:plane; outputElement:#texture-plane${cameraData[index].index}; sequence: before`);
+          camera.setAttribute('secondary-camera', `output:scene; outputElement:#texture-plane${cameraData[index].index}; sequence: before`);
 
           parent = document.querySelector(cameraData[index].parent);
           parent.appendChild(camera)

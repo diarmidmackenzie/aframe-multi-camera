@@ -103,7 +103,7 @@ Here are some current limitations with these components.
 - For rendering in-scene, there is no frustrum culling.  Textures are rendered whether or not they are actually in view of camera.
 - Rendering to screen is intended for desktop only, and is not intended to be used in VR.  When in VR, rendering is skipped for secondary-cameras that render to screen (for rendering to a VR HUD, you can use rendering in-scene to a plane fixed directly in front of the camera).
 - In VR (tested on Oculus Quest 2) , mirror textures seem to be extremely pixelated, regardless of "quality" settings.  I haven't yet understood why this is.
-- Cursor controls cannot be used on mirror textures, or secondary cameras rendered to a plane - only to secondary cameras rendered to screen.  If you have specific use cases that need cursor on either of these, raise an issue and I will take a look at how hard this is.
+- Cursor controls can only be used on secondary cameras rendered to screen, not on mirror textures, or secondary cameras rendered to a plane or other geometry within the scene.  If you have specific use cases that need cursor on either of these, raise an issue and I will take a look at how hard this is.
 
 
 
@@ -145,11 +145,12 @@ This is a generic component that uses add-render-call to support one or more sec
 
 | Property      | Default value | Description                                                  |
 | ------------- | ------------- | ------------------------------------------------------------ |
-| output        | 'screen'      | 'screen' or 'plane'.  Determines whether the camera output goes to screen, or to a plane within the scene. |
-| outputElement | none          | The DOM element that camera output should be rendered to.  For output = 'screen', this is typically a HTML div outside the A-Frame scene, with suitable styling to set its position.<br />For output='plane' this should be an A-Frame entity of type `<a-plane>`.  It also needs to have the src parameter specified with a texture (any texture will do) - see examples. (I should be able to write some code to lift this restriction, but didn't do it yet!) |
+| output        | 'screen'      | 'screen' or 'scene' (or 'plane' for backward compatibility).  Determines whether the camera output goes to screen or to an entity within the scene. |
+| outputElement | none          | The DOM element that camera output should be rendered to.  For output = 'screen', this is typically a HTML div outside the A-Frame scene, with suitable styling to set its position.<br />For output='scene' (or 'plane') this should be an A-Frame entity, for example an `<a-plane>`.  If you want to render on something other than a plane (like a circle for example), you may need to play with the aspectRatio property (see below). It also needs to have the src parameter specified with a texture (any texture will do) - see examples. (I should be able to write some code to lift this restriction, but didn't do it yet!) |
 | cameraType    | orthographic  | Either "orthographic" or "perspective".  Determines the type of camera used to render the viewpoint selector cube.  Other camera parameters (e.g. position, fov etc.) are not yet configurable. |
 | sequence      | 'after'       | 'before', 'after' or 'replace'.  Determines whether the camera view is rendered before or after the main scene is rendered, or whether this camera replaces the main camera completely.<br />Typically set to 'after' when rendering to screen, and 'before' when rendering to a plane within the scene (so that the rendered plane is included in the final scene render).<br />If 'replace' is set on any one secondary camera, this will mean that the main camera is not rendered. |
-| quality       | "high"        | Either "high" or "low".  Only applicable when output='plane'.   This determines the resolution used for the texture.  "low" quality results in a lower-resolution texture, where there will be more noticeable pixelation, but will support a higher frame-rate. |
+| quality       | "high"        | Either "high" or "low".  Only applicable when output='scene' (or 'plane').   This determines the resolution used for the texture.  "low" quality results in a lower-resolution texture, where there will be more noticeable pixelation, but will support a higher frame-rate. |
+| aspectRatio   | "auto"        | Either "auto" or a number.  "auto" will set the aspect ratio based on the geometry's "width" and "height" properties if they exist, or will set the aspect ratio to 1 if they don't.  If you specify a numeric value, it will be used as the aspect ratio (for example if the outputElement is a circle, specify a ratio of 1). |
 
 This component provides generic second camera functionality in the scene.
 
