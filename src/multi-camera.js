@@ -326,7 +326,7 @@ AFRAME.registerComponent('secondary-camera', {
         // don't bother rendering to screen in VR mode.
         if (this.data.output === "screen" && this.el.sceneEl.is('vr-mode')) return;
 
-        var elemRect;
+        let elemRect;
 
         if (this.data.output === "screen") {
             const elem = this.data.outputElement;
@@ -347,16 +347,22 @@ AFRAME.registerComponent('secondary-camera', {
           // "bottom" position is relative to the whole viewport, not just the canvas.
           // We need to turn this into a distance from the bottom of the canvas.
           // We need to consider the header bar above the canvas, and the size of the canvas.
-          const mainRect = renderer.domElement.getBoundingClientRect();
+          const canvas = renderer.domElement
+          const mainRect = canvas.getBoundingClientRect();
 
           renderer.getViewport(this.savedViewport);
           this.savedScissorTest = renderer.getScissorTest();
           renderer.getScissor(this.savedScissor);
 
-          this.outputRectangle.set(elemRect.left - mainRect.left,
-                                    mainRect.bottom - elemRect.bottom,
-                                    elemRect.width,
-                                    elemRect.height);
+          const pixelRatio = renderer.getPixelRatio()
+          const hScale = (canvas.width / mainRect.width) / pixelRatio
+          const vScale = (canvas.height / mainRect.height) / pixelRatio
+          
+          this.outputRectangle.set(hScale * (elemRect.left - mainRect.left),
+                                    vScale * (mainRect.bottom - elemRect.bottom),
+                                    hScale * elemRect.width,
+                                    vScale * elemRect.height);
+
           renderer.setViewport(this.outputRectangle);
           renderer.setScissorTest(true);
           renderer.setScissor(this.outputRectangle);
